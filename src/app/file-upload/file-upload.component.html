@@ -1,0 +1,35 @@
+<div class="upload-container">
+    <mat-card appearance="outlined" class="upload-card">
+      <mat-card-header>
+        <mat-card-title>Medical Billing APTP Form Filler</mat-card-title>
+        <mat-card-subtitle>AI-powered automation for form filling</mat-card-subtitle>
+      </mat-card-header>
+  
+      <mat-card>
+        <form>
+          <label class="upload-label">
+            Upload Encounter PDF
+            <input type="file" (change)="onEncounterPdfSelected($event)" accept=".pdf" />
+          </label>
+          <div *ngIf="encounterPdfFile">
+            <span>Selected: {{ encounterPdfFile.name }}</span>
+          </div>
+      
+          <label class="upload-label">
+            Upload APTP Excel or CSV Form
+            <input type="file" (change)="onAptpFormSelected($event)" accept=".xlsx,.csv" />
+          </label>
+          <div *ngIf="aptpFormFile">
+            <span>Selected: {{ aptpFormFile.name }}</span>
+          </div>
+        </form>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="uploadFiles()" [disabled]="!encounterPdfFile || !aptpFormFile">
+            Upload & Process
+          </button>
+        </mat-card-actions>
+      
+        </mat-card>
+    </mat-card>
+</div>
+  
