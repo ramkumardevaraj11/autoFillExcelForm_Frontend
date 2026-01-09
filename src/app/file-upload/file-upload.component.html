@@ -1,35 +1,110 @@
 <div class="upload-container">
+  <div class="main-content">
     <mat-card appearance="outlined" class="upload-card">
-      <mat-card-header>
-        <mat-card-title>Medical Billing APTP Form Filler</mat-card-title>
-        <mat-card-subtitle>AI-powered automation for form filling</mat-card-subtitle>
+      <mat-card-header class="card-header">
+        <div class="header-icon">
+          <mat-icon class="main-icon">medical_services</mat-icon>
+        </div>
+        <mat-card-title class="card-title">Medical Billing Excel Form Filler</mat-card-title>
+        <mat-card-subtitle class="card-subtitle">AI-powered automation for intelligent form filling</mat-card-subtitle>
       </mat-card-header>
-  
-      <mat-card>
-        <form>
-          <label class="upload-label">
-            Upload Encounter PDF
-            <input type="file" (change)="onEncounterPdfSelected($event)" accept=".pdf" />
-          </label>
-          <div *ngIf="encounterPdfFile">
-            <span>Selected: {{ encounterPdfFile.name }}</span>
+
+      <mat-card-content class="card-content">
+        <!-- Encounter PDF Upload Area -->
+        <div class="upload-section">
+          <div 
+            class="upload-area" 
+            [class.drag-over]="isDraggingEncounter"
+            [class.file-selected]="encounterPdfFile"
+            (dragover)="onDragOver($event, 'encounter')"
+            (dragleave)="onDragLeave($event, 'encounter')"
+            (drop)="onDrop($event, 'encounter')"
+            (click)="triggerFileInput('encounter')">
+            <input 
+              #encounterInput 
+              type="file" 
+              (change)="onEncounterPdfSelected($event)" 
+              accept=".pdf" 
+              hidden />
+            
+            <div class="upload-content" *ngIf="!encounterPdfFile">
+              <mat-icon class="upload-icon">description</mat-icon>
+              <h3 class="upload-title">Upload PDF</h3>
+              <p class="upload-hint">Drag and drop your PDF file here, or click to browse</p>
+              <span class="file-type-hint">PDF files only</span>
+            </div>
+
+            <div class="file-info" *ngIf="encounterPdfFile">
+              <mat-icon class="file-icon">insert_drive_file</mat-icon>
+              <div class="file-details">
+                <span class="file-name">{{ encounterPdfFile.name }}</span>
+                <span class="file-size">{{ formatFileSize(encounterPdfFile.size) }}</span>
+              </div>
+              <button mat-icon-button class="remove-btn" (click)="removeFile('encounter', $event)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
-      
-          <label class="upload-label">
-            Upload APTP Excel or CSV Form
-            <input type="file" (change)="onAptpFormSelected($event)" accept=".xlsx,.csv" />
-          </label>
-          <div *ngIf="aptpFormFile">
-            <span>Selected: {{ aptpFormFile.name }}</span>
+        </div>
+
+        <!-- APTP Form Upload Area -->
+        <div class="upload-section">
+          <div 
+            class="upload-area" 
+            [class.drag-over]="isDraggingAptp"
+            [class.file-selected]="aptpFormFile"
+            (dragover)="onDragOver($event, 'aptp')"
+            (dragleave)="onDragLeave($event, 'aptp')"
+            (drop)="onDrop($event, 'aptp')"
+            (click)="triggerFileInput('aptp')">
+            <input 
+              #aptpInput 
+              type="file" 
+              (change)="onAptpFormSelected($event)" 
+              accept=".xlsx,.csv" 
+              hidden />
+            
+            <div class="upload-content" *ngIf="!aptpFormFile">
+              <mat-icon class="upload-icon">table_chart</mat-icon>
+              <h3 class="upload-title">Upload Excel Form</h3>
+              <p class="upload-hint">Drag and drop your Excel file here, or click to browse</p>
+              <span class="file-type-hint">Excel (.xlsx) file</span>
+            </div>
+
+            <div class="file-info" *ngIf="aptpFormFile">
+              <mat-icon class="file-icon">insert_drive_file</mat-icon>
+              <div class="file-details">
+                <span class="file-name">{{ aptpFormFile.name }}</span>
+                <span class="file-size">{{ formatFileSize(aptpFormFile.size) }}</span>
+              </div>
+              <button mat-icon-button class="remove-btn" (click)="removeFile('aptp', $event)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
-        </form>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="uploadFiles()" [disabled]="!encounterPdfFile || !aptpFormFile">
-            Upload & Process
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section" *ngIf="isUploading">
+          <mat-progress-bar mode="indeterminate" class="progress-bar"></mat-progress-bar>
+          <p class="progress-text">Processing your files... Please wait</p>
+        </div>
+
+        <!-- Action Button -->
+        <div class="action-section">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            class="upload-button"
+            (click)="uploadFiles()" 
+            [disabled]="!encounterPdfFile || !aptpFormFile || isUploading">
+            <mat-icon *ngIf="!isUploading">cloud_upload</mat-icon>
+            <mat-icon *ngIf="isUploading" class="spinning">sync</mat-icon>
+            <span>{{ isUploading ? 'Processing...' : 'Upload & Process' }}</span>
           </button>
-        </mat-card-actions>
-      
-        </mat-card>
+        </div>
+      </mat-card-content>
     </mat-card>
+  </div>
 </div>
   
